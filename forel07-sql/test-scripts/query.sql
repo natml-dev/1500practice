@@ -40,3 +40,124 @@ INNER JOIN listenings l
 ON s.song_id = l.song_id
 GROUP BY s.song_id
 ORDER BY average_rating;
+
+-- 1. UC: Show all songs listened to by each user.
+
+SELECT u.name, u.email, s.title, s.artist, l.listen_time
+FROM users u JOIN listenings l
+ON u.user_id = l.user_id
+JOIN songs s 
+ON l.song_id = s.song_id;
+
+-- 2. UC: Show the rating each user gave to each song.
+SELECT u.name, s.title, s.artist, l.rating
+FROM users u JOIN listenings l
+ON u.user_id = l.user_id
+JOIN songs s 
+ON l.song_id = s.song_id;
+
+-- 3. UC: List all listening events with full details.
+
+SELECT l.listen_id, u.name, s.title, s.genre, l.rating, l.listen_time
+FROM listenings l JOIN users u
+ON l.user_id = u.user_id
+JOIN songs s 
+ON l.song_id = s.song_id;
+
+--4. UC: Find all songs listened to by a specific user - Daffy
+
+SELECT u.name, s.title, s.artist, l.listen_time
+FROM users u INNER JOIN listenings l
+ON u.user_id = l.user_id
+JOIN songs s
+ON l.song_id = s.song_id
+WHERE u.name = 'Daffy';
+
+-- 5. Show all users who listened to songs in the genre 'Pop'.
+SELECT u.name, u.email, s.title, s.genre
+FROM users u JOIN listenings l 
+ON u.user_id = l.user_id
+JOIN songs s 
+ON l.song_id = s.song_id
+WHERE genre = 'Pop';
+
+-- 6. UC: Show all recommendations received by users.
+
+SELECT u.name, s.title, s.artist, r.recommendation_time
+FROM users u JOIN recommendations r 
+ON u.user_id = r.user_id
+JOIN songs s
+ON r.song_id = s.song_id; 
+
+-- 7 UC: Find all songs recommended to a specific user.
+
+SELECT u.name, s.title, s.artist, r.recommendation_time
+FROM users u JOIN recommendations r 
+ON u.user_id = r.user_id
+JOIN songs s
+ON r.song_id = s.song_id
+WHERE u.name = 'Daffy';
+
+-- 8. UC: Show which users received recommendations in the genre 'Rock'.
+SELECT u.name, u.email, s.title, s.genre, r.recommendation_time
+FROM users u JOIN recommendations r
+ON u.user_id = r.user_id
+JOIN songs s
+ON s.song_id = r.song_id
+WHERE s.genre = 'Rock';
+
+-- 9. UC: Show all songs that were both listened to and rated by users
+SELECT u.name, s.title, l.rating, l.listen_time
+FROM users u JOIN listenings l
+ON u.user_id = l.user_id
+JOIN songs s 
+ON l.song_id = s.song_id
+WHERE l.rating IS NOT NULL;
+
+-- 10 List all listening records sorted by most recent first.
+SELECT u.name, s.title, l.rating, l.listen_time
+FROM users u JOIN  listenings l 
+ON u.user_id = l.user_id
+JOIN songs s 
+ON l.song_id = s.song_id
+ORDER BY l.listen_time DESC;
+
+-- 11. Find all users who gave a rating higher than 4 to a song
+SELECT u.name, s.title, s.artist, l.rating 
+FROM users u JOIN listenings l
+ON u.user_id = l.user_id
+JOIN songs s 
+ON l.song_id = s.song_id
+WHERE l.rating > 4;
+
+-- 12. Show all recommendations made after a certain date.
+SELECT u.name, s.title, s.artist, r.recommendation_time
+FROM users u JOIN recommendations r 
+ON u.user_id = r.user_id
+JOIN songs s 
+ON r.song_id = s.song_id
+WHERE r.recommendation_time > '2024-08-28';
+
+--13. List all users and the songs they listened to, but only songs by a specific artist
+SELECT u.name, s.title, s.artist, l.rating
+FROM users u JOIN listenings l 
+ON u.user_id = l.user_id
+JOIN songs s
+ON l.song_id = s.song_id
+WHERE s.artist = 'Adele';
+
+-- 14. Find all listening records where the song genre is 'Jazz'.
+SELECT u.name, s.title, s.genre, l.rating, l.listen_time
+FROM users u JOIN listenings l 
+ON u.user_id = l.user_id
+JOIN songs s 
+ON l.song_id = s.song_id
+WHERE genre = 'Jazz';
+
+-- 15. Show all recommendations with full details, ordered by newest first
+SELECT r.recommendation_id, u.name, s.title, s.genre, r.recommendation_time
+FROM users u JOIN recommendations r 
+ON u.user_id = r.user_id
+JOIN songs s 
+ON r.song_id = s.song_id
+ORDER BY r.recommendation_time DESC;
