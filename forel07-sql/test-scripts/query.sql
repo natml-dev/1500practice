@@ -161,3 +161,18 @@ ON u.user_id = r.user_id
 JOIN songs s 
 ON r.song_id = s.song_id
 ORDER BY r.recommendation_time DESC;
+
+-- 16. Top 10 most popular songs
+SELECT s.title, s.artist, COUNT(l.listen_id) AS times_played
+FROM listenings l JOIN songs s 
+ON l.song_id = s.song_id
+GROUP BY s.title, s.artist
+ORDER BY times_played DESC
+LIMIT 10;
+
+-- average rating per song
+SELECT s.title, ROUND(AVG(l.rating):: numeric, 2) AS average_rating
+FROM  songs s JOIN listenings l
+ON s.song_id = l.song_id
+GROUP BY s.title
+ORDER BY average_rating DESC;
